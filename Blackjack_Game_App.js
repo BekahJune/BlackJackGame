@@ -3,7 +3,7 @@
 // by BekahJune
 //
 
-// Card variables
+// Card variables - allow createDeck() to follow specific order
 let suits = ['Hearts', 'Clubs', 'Diamonds', 'Spades'];
 let values = ['Ace', 'King', 'Queen', 'Jack',
     'Ten', 'Nine', 'Eight', 'Seven', 'Six',
@@ -14,6 +14,10 @@ let textArea = document.getElementById('text-area'),
     newGameButton = document.getElementById('new-game-button'),
     hitButton = document.getElementById('hit-button'),
     stayButton = document.getElementById('stay-button');
+
+
+// first deal card
+let firstDeal = true;
 
 // Game Variables
 let gameStarted = false,
@@ -29,6 +33,7 @@ hitButton.style.display = 'none';
 stayButton.style.display = 'none';
 showStatus();
 
+// UI interaction 
 newGameButton.addEventListener('click', function() {
   gameStarted = true;
   gameOver = false;
@@ -57,9 +62,41 @@ stayButton.addEventListener('click', function() {
   showStatus();
 });
 
+// dealer and player
+let dealer = {
+  cards: [],
+  score: function() {
+    let count = 0;
+    for (let i = 0; i < this.cards.length; i++) {
+      count = count + this.cards[i].score;
+      if (this.cards[i].score === 1 && count <= 11) {
+        count = count + 10; // ace is 11 points if total is <= 21
+      }
+    };
+    return count;
+  }
+}
+
+let player = {
+  cards: [],
+  score: function() {
+    let count = 0;
+    for (let i = 0; i < this.cards.length; i++) {
+      count = count + this.cards[i].score;
+      if (this.cards[i].score === 1 && count <= 11) {
+        count = count + 10; // ace is 11 points if total is <= 21
+      }
+    }
+    return count;
+  }
+}
+
+
+// functions 
+
+let deck = [];
 
 function createDeck() {
-  let deck = [];
   for (let suitIdx = 0; suitIdx < suits.length; suitIdx++) {
       for (let valueIdx = 0; valueIdx < values.length; valueIdx++) {
         let card = {
@@ -73,6 +110,7 @@ function createDeck() {
 }
 
 
+// shuffle deck
 function shuffleDeck(deck) {
   for (let i = 0; i < deck.length; i++) {
     let swapIdx = Math.trunc(Math.random() * deck.length);
@@ -86,6 +124,7 @@ function getCardString(card) {
   return card.value + ' of ' + card.suit;
 }
 
+// get next card from deck
 function getNextCard() {
   return deck.shift();
 }
